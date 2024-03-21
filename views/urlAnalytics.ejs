@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/url_analytics.css">
+    <link rel="stylesheet" href="/css/mobile.css">
+    <script src="/js/main.js" defer></script>
+    <script src="/js/url_analytics.js" defer></script>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <main>
+        <h2 class="page-heading mobile-heading">Showing Analytics for <span style="color: rgba(0, 0, 0, 0.685)"><%= urlAnalytics.shortUrl %></span></h2>
+        <div class="container">
+            <% if (urlAnalytics.analytics && urlAnalytics.analytics.length > 0) { %>
+                <table class="url-analytics-table">
+                    <thead>
+                        <th>IP Address</th>
+                        <th>No. of Clicks</th>
+                        <th>Country Code</th>
+                        <th>Country</th>
+                    </thead>
+                    <tbody>
+                        <% for (let i = 0; i < urlAnalytics.analytics.length; i++) { %>
+                            <tr class="analytics-row">
+                                <td><%= urlAnalytics.analytics[i].ip ? urlAnalytics.analytics[i].ip : '' %></td>
+                                <td><%= urlAnalytics.analytics[i].clickCount ? urlAnalytics.analytics[i].clickCount : '' %></td>
+                                <td><%= urlAnalytics.analytics[i].locationInfo.addressCountryCode
+                                    ? urlAnalytics.analytics[i].locationInfo.addressCountryCode : '' %></td>
+                                <td><%= urlAnalytics.analytics[i].locationInfo.addressCountry
+                                    ? urlAnalytics.analytics[i].locationInfo.addressCountry : '' %></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                    
+                </table>
+                <div class="pagination">
+                    <a href="/api/urls/analytics/<%= urlAnalytics.analytics[0].urlCode %>/<%= urlAnalytics.previousPage %>/prev"><< Previous</a> 
+                    <a href="/api/urls/analytics/<%= urlAnalytics.analytics[0].urlCode %>/<%= urlAnalytics.nextPage %>/next">Next >></a>
+                </div>
+            <% } else { %>
+                <p>This link has 0 traffick currently.</p>
+            <% } %>
+        </div>
+    </main>
+    <%- include('partials/footer') %>
+</body>
+</html>

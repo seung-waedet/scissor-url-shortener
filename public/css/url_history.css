@@ -1,0 +1,43 @@
+.url-summary {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.url-summary a {
+    margin-bottom: 1.1em;
+    color: rgba(0, 0, 0, 0.788)
+}
+
+.url-summary a:hover {
+    color: tomato;
+}
+
+.instruction {
+    text-align: center;
+    margin-top: 0.9em;
+    margin-bottom: 0.9em;
+}
+
+.url-info {
+    background-color: rgba(0, 0, 0, 0.048);
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 0.6em;
+    padding: 0.7em;
+}
+
+.url-info:hover {
+    background-color: white;
+}
+
+.url-info div {
+    margin-bottom: 0.7em;
+}
+
+#empty-space {
+    margin-top: 150px;
+}
+
+#url-date {
+    font-size: 0.7em;
+}

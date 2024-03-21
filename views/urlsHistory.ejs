@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URLs History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/url_history.css">
+    <link rel="stylesheet" href="/css/mobile.css">
+    <script src="/js/main.js" defer></script>
+</head>
+<body>
+    <%- include('partials/header') %>
+    <main>
+        <h2 class="page-heading">URLs History</h2>
+        <p class="instruction">Click on a URL box to view its details</p>
+        <div class="container">
+            <% if (urlsHistory.urls && urlsHistory.urls.length > 0) { %>
+                <% for (let i = 0; i < urlsHistory.urls.length; i++) { %>
+                    <div class="url-summary">
+                        <a href="/api/urls/view/<%= urlsHistory.urls[i]._id %>">
+                            <div class="url-info">
+                                <div>
+                                    <h4>Description</h4>
+                                    <p><%= urlsHistory.urls[i].description ? urlsHistory.urls[i].description : 'Not Available' %></p>
+                                </div>
+                                <div>
+                                    <h4>Short URL</h4>
+                                    <p><%= urlsHistory.urls[i].shortUrl ? urlsHistory.urls[i].shortUrl : 'Not Available' %></p>
+                                </div>
+                                <div id="url-date">
+                                    <p><%= urlsHistory.urls[i].createdAt ? urlsHistory.urls[i].createdAt.toLocaleDateString('en-GB', {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit',
+                                      }) : 'Not Available' %></p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <% } %>
+                <div class="pagination">
+                    <a href="/api/urls/history/<%= urlsHistory.previousPage %>/prev"><< Previous</a>
+                    <a href="/api/urls/history/<%= urlsHistory.nextPage %>/next">Next >></a>
+                </div>
+            <% } else { %>
+                <p>Your URLs history is currently empty.</p>
+            <% } %>
+        </div>
+    </main>
+    <%- include('partials/footer') %>
+</body>
+</html>

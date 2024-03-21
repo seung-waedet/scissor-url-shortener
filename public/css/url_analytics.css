@@ -1,0 +1,15 @@
+table {
+    width: 100%;
+    margin: 0 auto;
+    color: white;
+}
+
+table td {
+    text-align: center;
+    padding: 0.4em;
+}
+
+table th {
+    background-color: tomato;
+    padding: 0.8em;
+}
