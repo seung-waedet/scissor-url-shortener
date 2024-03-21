@@ -3,11 +3,8 @@ import { UrlAnalytics } from '../models/urlAnalytics.model';
 import shortId from 'shortid';
 import * as QRCode from 'qrcode';
 import { config } from '../configs';
-import { SuperfaceClient } from "@superfaceai/one-sdk";
 import axios from 'axios';
 
-
-const sdk = new SuperfaceClient();
 
 
 export const shortenUrlService = async (body: Record<string, any>, userId: string, baseUrl: string) => {
