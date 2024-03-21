@@ -4,6 +4,7 @@ import shortId from 'shortid';
 import * as QRCode from 'qrcode';
 import { config } from '../configs';
 import { SuperfaceClient } from "@superfaceai/one-sdk";
+import axios from 'axios';
 
 
 const sdk = new SuperfaceClient();
@@ -36,41 +37,41 @@ export const shortenUrlService = async (body: Record<string, any>, userId: strin
  }
 
  
-export const returnLongUrlService = async (urlCode: string, ip: string) => {
+ export const returnLongUrlService = async (urlCode: string, ip: string) => {
     const url = await Url.findOne({ urlCode });
 
-    //Update url analytics
+    // Update URL analytics
     let analytics = await UrlAnalytics.findOne({ urlCode, ip });
     if (analytics) {
         analytics.clickCount = analytics.clickCount + 1;
         await analytics.save();
     } else {
-        const profile = await sdk.getProfile("address/ip-geolocation@1.0.1");
-        const result = await profile.getUseCase("IpGeolocation").perform(
-        {
-            ipAddress: ip
-        },
-        {
-            provider: "ipdata",
-            security: {
-                    apikey: {
+        try {
+            // Fetch location information using Axios
+            const response = await axios.get('https://api.ipdata.co', {
+                params: {
+                    ip: ip,
                     apikey: config.IP_DATA_API_KEY
                 }
-            }
+            });
+
+            // Extract location information from the response
+            const locationInfo = response.data;
+
+            // Create new URL analytics entry
+            analytics = new UrlAnalytics({
+                urlCode,
+                ip,
+                clickCount: 1,
+                locationInfo
+            });
+            await analytics.save();
+        } catch (error) {
+            console.error('Error fetching location information:', error);
         }
-        );
-        
-        const data = result.unwrap();
-        let analytics = new UrlAnalytics({
-            urlCode,
-            ip,
-            clickCount: 1,
-            locationInfo: data
-        });
-        await analytics.save();
     }
     return url;
- }
+}
 
 
  export const getUrlByIdService = async (id: string) => {
