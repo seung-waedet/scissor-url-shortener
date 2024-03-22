@@ -41,8 +41,7 @@ const urlAnalytics_model_1 = require("../models/urlAnalytics.model");
 const shortid_1 = __importDefault(require("shortid"));
 const QRCode = __importStar(require("qrcode"));
 const configs_1 = require("../configs");
-const one_sdk_1 = require("@superfaceai/one-sdk");
-const sdk = new one_sdk_1.SuperfaceClient();
+const axios_1 = __importDefault(require("axios"));
 const shortenUrlService = (body, userId, baseUrl) => __awaiter(void 0, void 0, void 0, function* () {
     let url = yield urls_model_1.Url.findOne({ longUrl: body.longUrl, userId });
     if (url) {
@@ -73,32 +72,35 @@ const shortenUrlService = (body, userId, baseUrl) => __awaiter(void 0, void 0, v
 exports.shortenUrlService = shortenUrlService;
 const returnLongUrlService = (urlCode, ip) => __awaiter(void 0, void 0, void 0, function* () {
     const url = yield urls_model_1.Url.findOne({ urlCode });
-    //Update url analytics
+    // Update URL analytics
     let analytics = yield urlAnalytics_model_1.UrlAnalytics.findOne({ urlCode, ip });
     if (analytics) {
         analytics.clickCount = analytics.clickCount + 1;
         yield analytics.save();
     }
     else {
-        const profile = yield sdk.getProfile("address/ip-geolocation@1.0.1");
-        const result = yield profile.getUseCase("IpGeolocation").perform({
-            ipAddress: ip
-        }, {
-            provider: "ipdata",
-            security: {
-                apikey: {
+        try {
+            // Fetch location information using Axios
+            const response = yield axios_1.default.get('https://api.ipdata.co', {
+                params: {
+                    ip: ip,
                     apikey: configs_1.config.IP_DATA_API_KEY
                 }
-            }
-        });
-        const data = result.unwrap();
-        let analytics = new urlAnalytics_model_1.UrlAnalytics({
-            urlCode,
-            ip,
-            clickCount: 1,
-            locationInfo: data
-        });
-        yield analytics.save();
+            });
+            // Extract location information from the response
+            const locationInfo = response.data;
+            // Create new URL analytics entry
+            analytics = new urlAnalytics_model_1.UrlAnalytics({
+                urlCode,
+                ip,
+                clickCount: 1,
+                locationInfo
+            });
+            yield analytics.save();
+        }
+        catch (error) {
+            console.error('Error fetching location information:', error);
+        }
     }
     return url;
 });
